@@ -1,4 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Mermaid app
+
+Auth flow:
+- Default route `/` redirects to `/login`.
+- If user is authenticated, navigation to `/login` will redirect to `/home`.
+- `/home` is guarded and redirects to `/login` when signed out.
+
+Setup Firebase env (create `.env.local` in project root):
+
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+NEXT_PUBLIC_FIREBASE_APP_ID=...
+```
+
+Run:
+
+```
+npm run dev
+```
 
 ## Getting Started
 

@@ -7,6 +7,10 @@ const PUBLIC_PATHS = [
 
 export function middleware(req) {
   const { pathname } = req.nextUrl;
+  // Allow requests for static assets (files with an extension) to pass through
+  if (/\.[a-zA-Z0-9]+$/.test(pathname)) {
+    return NextResponse.next();
+  }
   const isPublic = PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'));
   const hasAuth = req.cookies.get('mermaid_auth')?.value === '1';
 

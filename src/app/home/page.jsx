@@ -108,13 +108,6 @@ export default function HomePage() {
           Welcome, {firstName ? firstName.toUpperCase() : 'RONIT'}
         </p>
 
-        {/* Secondary Logout Button */}
-        <button
-          onClick={handleLogout}
-          className="mb-4 px-4 py-2 rounded-md bg-[#232b30] text-[#edeef0] hover:bg-[#22292f] transition"
-        >
-          Logout
-        </button>
 
         {/* Main Heading and Subtitle */}
         <h1 className="text-3xl md:text-4xl font-extrabold mb-4 text-[#abf5ff] drop-shadow-[0_0_12px_#65e4ff60] text-center">

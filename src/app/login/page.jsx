@@ -22,7 +22,7 @@ export default function LoginPage() {
     startAuto();
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
-        document.cookie = `mermaid_auth=1; path=/`;
+        document.cookie = `oceanus_auth=1; path=/`;
         router.replace('/home');
       }
     });
@@ -90,11 +90,11 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           <div className="flex flex-col items-center mb-6">
             <div className="w-14 h-14 rounded-xl bg-neutral-800 mb-4 flex items-center justify-center">
-              <span className="text-xl font-bold">M</span>
+              <span className="text-xl font-bold">O</span>
             </div>
-            <h1 className="text-3xl font-bold">Welcome to Mermaid</h1>
+            <h1 className="text-3xl font-bold">Welcome to OceanusAI</h1>
             <p className="text-neutral-400 mt-2">
-              Don’t have an account? <a className="text-teal-400">Sign up for free</a>
+              Ready to speak with the waves.
             </p>
           </div>
 
@@ -104,7 +104,7 @@ export default function LoginPage() {
               onClick={async () => {
                 try {
                   await signInWithPopup(auth, googleProvider);
-                  document.cookie = `mermaid_auth=1; path=/`;
+                  document.cookie = `oceanus_auth=1; path=/`;
                   router.replace('/home');
                 } catch (e) {
                   console.error('Google sign-in failed', e);
@@ -176,8 +176,8 @@ export default function LoginPage() {
         <div className="relative z-10 flex flex-col h-full text-white">
           {/* tagline */}
           <div className="pt-10 px-8 text-center">
-            <h2 className="text-4xl font-bold drop-shadow-md">Learn About Ocean</h2>
-            <p className="mt-1 text-xl">With AI</p>
+            <h2 className="text-4xl font-bold drop-shadow-md">OceanusAI</h2>
+            <p className="mt-1 text-xl">Ready to speak with the waves.</p>
           </div>
 
           {/* carousel area */}

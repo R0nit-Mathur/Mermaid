@@ -12,8 +12,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Mermaid",
-  description: "Mermaid platform",
+  title: "OceanusAI",
+  description: "Ready to speak with the waves.",
 };
 
 export default function RootLayout({ children }) {

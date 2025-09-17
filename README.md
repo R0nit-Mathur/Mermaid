@@ -1,4 +1,6 @@
-Mermaid app
+OceanusAI
+
+Tagline: Ready to speak with the waves.
 
 Auth flow:
 - Default route `/` redirects to `/login`.

@@ -12,7 +12,7 @@ export function middleware(req) {
     return NextResponse.next();
   }
   const isPublic = PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'));
-  const hasAuth = req.cookies.get('mermaid_auth')?.value === '1';
+  const hasAuth = req.cookies.get('oceanus_auth')?.value === '1';
 
   // Redirect root based on auth
   if (pathname === '/') {

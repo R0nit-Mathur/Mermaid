@@ -176,9 +176,9 @@ export default function HomePage() {
           {/* Prompts Row */}
           <div className="mt-6 flex flex-wrap gap-3 justify-center">
             {[
-              "Clone Youtube",
-              "Budget Planner",
-              "AI Pen",
+              "Fishing Spots",
+              "Gold Fishes",
+              "Water Bodies",
               "Surprise Me",
             ].map((btn) => (
               <button

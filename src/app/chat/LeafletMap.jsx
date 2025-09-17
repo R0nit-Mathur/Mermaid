@@ -59,6 +59,8 @@ export default function LeafletMap({ mapData = { zones: [], rivers: [], points: 
       });
       layersRef.current = [];
       
+      let firstZoneBounds = null;
+
       // Add zones
       mapData.zones.forEach(zone => {
         if (zone.coordinates && zone.coordinates.length > 0) {
@@ -69,6 +71,10 @@ export default function LeafletMap({ mapData = { zones: [], rivers: [], points: 
             fillColor: zone.color || '#ff0000',
             fillOpacity: 0.3
           }).addTo(mapRef.current);
+          
+          if (!firstZoneBounds) {
+            firstZoneBounds = polygon.getBounds();
+          }
           
           polygon.bindPopup(`
             <div>
@@ -117,6 +123,11 @@ export default function LeafletMap({ mapData = { zones: [], rivers: [], points: 
           layersRef.current.push(marker);
         }
       });
+
+      // Animated zoom to first zone if available
+      if (firstZoneBounds) {
+        mapRef.current.flyToBounds(firstZoneBounds, { padding: [30, 30], duration: 1.3, easeLinearity: 0.25 });
+      }
     })();
   }, [mapData, mounted]);
 

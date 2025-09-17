@@ -149,6 +149,9 @@ export default function HomePage() {
               <textarea
                 rows={1}
                 placeholder="Find me the best fishing spots in the indian ocean"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); goToChat(); } }}
                 className="w-full resize-none bg-transparent outline-none text-[#7dd3fc] placeholder-[#5e6b70] text-lg font-medium leading-relaxed"
                 style={{ minHeight: "40px", maxHeight: "100px" }}
               />

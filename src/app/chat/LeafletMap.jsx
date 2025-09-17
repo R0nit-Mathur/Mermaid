@@ -1,13 +1,20 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function LeafletMap({ mapData = { zones: [], rivers: [], points: [] } }) {
   const mapRef = useRef(null);
   const containerRef = useRef(null);
   const layersRef = useRef([]);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
     let mapInstance;
     (async () => {
       const L = await import('leaflet');
@@ -35,11 +42,11 @@ export default function LeafletMap({ mapData = { zones: [], rivers: [], points: 
         mapRef.current = null;
       }
     };
-  }, []);
+  }, [mounted]);
 
   // Update map overlays when mapData changes
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || !mounted) return;
     
     (async () => {
       const L = await import('leaflet');
@@ -111,7 +118,15 @@ export default function LeafletMap({ mapData = { zones: [], rivers: [], points: 
         }
       });
     })();
-  }, [mapData]);
+  }, [mapData, mounted]);
+
+  if (!mounted) {
+    return (
+      <div className="w-full h-full bg-gray-900 flex items-center justify-center">
+        <div className="text-white">Loading map...</div>
+      </div>
+    );
+  }
 
   return <div ref={containerRef} style={{ height: '100%', width: '100%' }} />;
 }

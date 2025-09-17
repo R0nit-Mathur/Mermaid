@@ -1,10 +1,14 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, Suspense } from 'react';
 import LeafletMap from './LeafletMap';
 import { generateOceanResponse } from '@/lib/gemini';
+import { useSearchParams } from 'next/navigation';
 
-export default function ChatPage() {
+function ChatInner() {
+  const searchParams = useSearchParams();
+  const initialPrompt = searchParams.get('prompt');
+
   const [messages, setMessages] = useState([
     { role: 'assistant', content: 'Hi! Ask me anything about oceans, fisheries, or eDNA.' }
   ]);
@@ -17,25 +21,34 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSend = async () => {
-    const trimmed = input.trim();
+  // Auto-send initial prompt from Home
+  useEffect(() => {
+    if (initialPrompt && !isLoading && messages.length <= 1) {
+      setInput(initialPrompt);
+      handleSend(initialPrompt);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialPrompt]);
+
+  const handleSend = async (forcedText) => {
+    const raw = forcedText ?? input;
+    const trimmed = raw.trim();
     if (!trimmed || isLoading) return;
     
     setIsLoading(true);
     const next = [...messages, { role: 'user', content: trimmed }];
-    setMessages(next);
+    // show typing bubble
+    setMessages([...next, { role: 'assistant', content: '...', typing: true }]);
     setInput('');
     
     try {
       const aiResponse = await generateOceanResponse(trimmed, next);
-      const assistantText = Array.isArray(aiResponse.response) ? aiResponse.response.join('\n') : aiResponse.response;
-      next.push({ role: 'assistant', content: assistantText });
+      const assistantArray = Array.isArray(aiResponse.response) ? aiResponse.response : [aiResponse.response];
       setMapData(aiResponse.mapData);
-      setMessages(next);
+      setMessages([...next, { role: 'assistant', content: assistantArray }]);
     } catch (error) {
       console.error('Error generating response:', error);
-      next.push({ role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' });
-      setMessages(next);
+      setMessages([...next, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
     } finally {
       setIsLoading(false);
     }
@@ -69,15 +82,19 @@ export default function ChatPage() {
             {messages.map((m, i) => (
               <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
                 <div className={`inline-block px-3 py-2 rounded-lg ${m.role === 'user' ? 'bg-[#232b30] text-[#edeef0]' : 'bg-[#0f1113] text-[#cfeaf1]'}`}>
-                  {Array.isArray(m.content)
-                    ? (
-                      <ol className="list-decimal ml-5 space-y-1">
-                        {m.content.map((item, idx) => (<li key={idx}>{item}</li>))}
-                      </ol>
-                    )
-                    : (
-                      m.content
-                    )}
+                  {m.typing ? (
+                    <span className="inline-flex gap-1">
+                      <span className="w-1.5 h-1.5 bg-[#9ccbd7] rounded-full animate-pulse" />
+                      <span className="w-1.5 h-1.5 bg-[#9ccbd7] rounded-full animate-pulse [animation-delay:150ms]" />
+                      <span className="w-1.5 h-1.5 bg-[#9ccbd7] rounded-full animate-pulse [animation-delay:300ms]" />
+                    </span>
+                  ) : Array.isArray(m.content) ? (
+                    <ol className="list-decimal ml-5 space-y-1">
+                      {m.content.map((item, idx) => (<li key={idx}>{item}</li>))}
+                    </ol>
+                  ) : (
+                    m.content
+                  )}
                 </div>
               </div>
             ))}
@@ -92,7 +109,7 @@ export default function ChatPage() {
               className="flex-1 bg-transparent outline-none border border-[#2c353b] rounded-md px-3 py-2 text-sm"
             />
             <button 
-              onClick={handleSend} 
+              onClick={() => handleSend()}
               disabled={isLoading}
               className="px-4 py-2 rounded-md bg-[#232b30] hover:bg-[#2b343a] disabled:opacity-50"
             >
@@ -137,5 +154,13 @@ export default function ChatPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-white">Loading...</div>}>
+      <ChatInner />
+    </Suspense>
   );
 }
